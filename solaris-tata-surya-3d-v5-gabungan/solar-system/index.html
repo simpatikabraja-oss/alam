@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Solaris — simulasi Tata Surya 3D interaktif yang berjalan langsung dari file HTML tanpa server atau CDN.">
+  <title>Solaris V5 — Simulasi Tata Surya Interaktif</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loading-screen" aria-live="polite">
+    <div class="loading-card">
+      <div class="loading-logo">SOLARIS</div>
+      <div class="loading-sub">Simulasi Tata Surya 3D</div>
+      <div class="loading-track"><div id="loading-bar"></div></div>
+      <div id="loading-text">Menyiapkan simulasi...</div>
+    </div>
+  </div>
+
+  <canvas id="scene-canvas"></canvas>
+
+  <header id="topbar" class="glass">
+    <div class="brand"><span class="brand-mark">☉</span><span class="brand-text">SOLARIS</span></div>
+    <nav id="nav-buttons" aria-label="Navigasi utama">
+      <button class="nav-btn active" data-panel="home">Home</button>
+      <button class="nav-btn" data-panel="explore">Explore</button>
+      <button class="nav-btn" data-panel="planets">Planet List</button>
+      <button class="nav-btn" data-panel="timeline">Timeline</button>
+      <button class="nav-btn" data-panel="mission">Misi</button>
+      <button class="nav-btn" data-panel="education">Edukasi</button>
+      <button class="nav-btn" data-panel="gallery">Gallery</button>
+      <button class="nav-btn" data-panel="about">About</button>
+      <button class="nav-btn owner-nav" data-panel="braja">Tentang Saya</button>
+      <button class="nav-btn" data-panel="settings">Settings</button>
+    </nav>
+    <div class="top-right">
+      <input id="search-input" type="search" placeholder="Cari planet..." autocomplete="off" aria-label="Cari planet">
+      <button id="audio-toggle" class="icon-btn" title="Audio">🔈</button>
+      <button id="fullscreen-toggle" class="icon-btn" title="Fullscreen">⛶</button>
+    </div>
+  </header>
+
+  <div id="hud">
+    <div class="hud-block glass">
+      <div class="hud-row"><span>📅</span><b id="hud-date">—</b></div>
+      <div class="hud-row"><span>🕐</span><b id="hud-time">—</b></div>
+      <div class="hud-row"><span>🎯</span><b id="hud-selected">Tidak ada</b></div>
+      <div class="hud-row"><span>📷</span><b id="hud-camdist">—</b></div>
+    </div>
+    <div class="hud-block glass hud-right">
+      <div class="hud-row"><b id="hud-fps">60 FPS</b></div>
+      <div class="hud-row"><b id="hud-speed">x1</b></div>
+      <canvas id="compass-canvas" width="80" height="80" aria-label="Kompas"></canvas>
+    </div>
+  </div>
+
+  <canvas id="minimap-canvas" width="150" height="150" aria-label="Minimap"></canvas>
+  <div id="orbit-legend" class="glass" aria-label="Keterangan orbit">
+    <span class="orbit-line"></span>
+    <span><b>Orbit</b> • jalur revolusi planet</span>
+    <button id="orbit-toggle" class="mini-toggle" type="button">ON</button>
+    <button id="follow-toggle" class="mini-toggle" type="button">FOLLOW</button>
+  </div>
+  <div id="focus-hint" class="focus-hint" aria-live="polite">
+    <span class="focus-pulse"></span><b id="focus-hint-title">Planet dipilih</b>
+    <span id="focus-hint-text">Kamera akan mengikuti planet.</span>
+    <button id="focus-hint-close" aria-label="Tutup petunjuk">✕</button>
+  </div>
+  <div id="tooltip"></div>
+  <div id="egg-banner"></div>
+
+  <div id="timeline-dock" class="glass">
+    <button id="reset-camera-btn" class="icon-btn" title="Reset kamera">⟲</button>
+    <button id="sun-btn" class="icon-btn" title="Fokus Matahari">☉</button>
+    <button id="play-pause-btn" class="icon-btn play-btn" title="Play/Pause">❚❚</button>
+    <div id="time-control">
+      <span id="sim-date-label">01 Jan 2025</span>
+      <input id="time-slider" type="range" min="0" max="36525" step="1" value="0" aria-label="Timeline simulasi">
+    </div>
+    <div id="speed-buttons"></div>
+  </div>
+
+  <aside id="info-panel" class="side-panel glass">
+    <button id="info-panel-close" class="panel-close" aria-label="Tutup deskripsi planet">✕</button>
+    <div id="info-content" class="panel-body"></div>
+  </aside>
+
+  <aside id="planet-list-panel" class="side-panel left-panel glass">
+    <button id="planet-list-close" class="panel-close">✕</button>
+    <div class="panel-header">Daftar Planet</div>
+    <div class="panel-body planet-list-body"></div>
+  </aside>
+
+  <aside id="mission-panel" class="side-panel left-panel glass">
+    <button id="mission-close" class="panel-close">✕</button>
+    <div class="panel-header">Mission Mode</div>
+    <div class="panel-body mission-body"></div>
+  </aside>
+
+  <aside id="education-panel" class="side-panel left-panel glass">
+    <button id="education-close" class="panel-close">✕</button>
+    <div class="panel-header">Mode Edukasi</div>
+    <div class="panel-body education-body"></div>
+  </aside>
+
+  <aside id="gallery-panel" class="side-panel left-panel glass">
+    <button id="gallery-close" class="panel-close">✕</button>
+    <div class="panel-header">Galeri</div>
+    <div class="panel-body gallery-body"></div>
+  </aside>
+
+  <aside id="about-panel" class="side-panel left-panel glass">
+    <button id="about-close" class="panel-close">✕</button>
+    <div class="panel-header">Tentang Solaris</div>
+    <div class="panel-body about-body"></div>
+  </aside>
+
+  <aside id="braja-panel" class="side-panel left-panel owner-panel glass">
+    <button id="braja-close" class="panel-close">✕</button>
+    <div class="panel-header">Tentang Saya</div>
+    <div class="panel-body braja-body"></div>
+  </aside>
+
+  <aside id="settings-panel" class="side-panel left-panel glass">
+    <button id="settings-close" class="panel-close">✕</button>
+    <div class="panel-header">Pengaturan</div>
+    <div class="panel-body settings-body"></div>
+  </aside>
+
+  <div id="interaction-tip" class="interaction-tip glass">Klik planet untuk fokus • klik area kosong untuk menutup deskripsi • drag untuk memutar kamera • scroll untuk zoom</div>
+
+  <div id="boot-error" class="boot-error" hidden>
+    <div class="boot-error-card">
+      <h2>Solaris tidak bisa dimulai</h2>
+      <p id="boot-error-text">Terjadi kesalahan saat menjalankan simulasi.</p>
+      <button id="reload-btn" class="btn-primary">Muat Ulang</button>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

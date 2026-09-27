@@ -1,0 +1,21 @@
+Solaris V3 — Changelog
+
+- Enhanced local planet textures: Sun, Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.
+- Added atmospheric shading, surface detail, cloud patterns, crater fields, gas-giant bands, and Jupiter storm detail.
+- Planet thumbnails/gallery now use local high-resolution assets.
+- Planet info cards use the same local planet artwork.
+- Added Mission Mode and Education panel to match the Solaris V3 mockup direction.
+- Kept the project fully offline: no CDN, no Three.js, no external font, no external asset dependency.
+- Added local texture preloading without blocking the first Canvas frame.
+
+
+Solaris V5
+- Combined prior V1–V5 features into one offline build.
+- Fixed planet click -> camera focus so camera targets the selected planet's moving world position.
+- Added optional FOLLOW/FREE camera mode.
+- Added blank-space click dismissal for planet descriptions.
+- Added tabbed planet info: Info, Satelit, Atmosfer, Fakta.
+- Added date scrubber timeline and x10000 speed.
+- Added animated Mission Mode route overlay.
+- Added education mini quiz and display scale selector.
+- Kept local enhanced planet image assets and offline compatibility.
